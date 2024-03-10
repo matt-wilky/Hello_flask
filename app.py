@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = 'software_engineering'
 
 # Update the SQL Server connection string for Azure SQL Server
-connection_string = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=time-manager-24.database.windows.net;DATABASE=time-manager-database;UID=CloudSAe3d0c2d0;PWD=Suarez89!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=600;'
+connection_string = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=time-manager-24.database.windows.net;DATABASE=time-manager-database;UID=CloudSAe3d0c2d0;PWD=Suarez89!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=1000;'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mssql+pyodbc:///?odbc_connect={connection_string}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -77,7 +77,7 @@ def login():
     else:
         return "Invalid username or password", 401
 
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('splash_page'))

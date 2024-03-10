@@ -21,7 +21,6 @@ def test_splash_page(client):
 def test_calendar(client):
     response = client.get('/calendar')
     assert response.status_code == 200
-   # assert b'Calendar' in response.data  # Assuming 'Calendar' is present in the template
 
 def test_register_page_loads(client):
     response = client.get('/register')
@@ -46,16 +45,7 @@ def test_register_existing_username(client):
     existing_user = User(username='test_user')
     existing_user.set_password('test_password')
     db.session.add(existing_user)
-   # db.session.commit()
-
-    # Try registering with the same username
-   # response = client.post('/register', data={
-   #     'username': 'test_user',
-   #     'password': 'test_password'
-   # }, follow_redirects=True)
-   # assert response.status_code == 500  # Assuming server returns 500 for database constraint violation
-    #assert b'An error occurred' in response.data
-
+    
 def test_login_page_loads(client):
     response = client.get('/')
     assert response.status_code == 200
@@ -88,8 +78,6 @@ def test_logout(client):
     assert response.status_code == 200
     assert b'Splash Page' in response.data
 
-# Additional tests can be added for other frontend pages such as calendar.html, add_event.html, etc.
-
 def test_calendar_page_loads(client):
     response = client.get('/calendar')
     assert response.status_code == 401
@@ -98,12 +86,10 @@ def test_calendar_page_loads(client):
 def test_add_event_page_unauthorized_access(client):
     response = client.get('/add_event', follow_redirects=True)
     assert response.status_code == 401
-   # assert b'Unauthorized' in response.data
 
 def test_login_missing_credentials(client):
     response = client.post('/login', data={}, follow_redirects=True)
     assert response.status_code == 401
-    #assert b'Invalid username or password' in response.data
 
 def test_logout_redirect(client):
     response = client.get('/logout', follow_redirects=False)
