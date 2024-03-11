@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = 'software_engineering'
 
 # Update the SQL Server connection string for Azure SQL Server
-connection_string = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=time-manager-24.database.windows.net;DATABASE=time-manager-database;UID=CloudSAe3d0c2d0;PWD=Suarez89!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=1000;'
+connection_string = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=time-manager-24.database.windows.net;DATABASE=time-manager-database;UID=CloudSAe3d0c2d0;PWD=Suarez89!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=1500;'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mssql+pyodbc:///?odbc_connect={connection_string}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -44,9 +44,16 @@ def splash_page():
 @app.route('/calendar')
 def calendar():
     user_id = session.get('user_id')
+
     if user_id:
-        new_events = New_Event.query.filter_by(user_id=user_id).all()
-        return render_template('calendar.html', events=new_events)
+        # Retrieve all events for the current user
+        all_events = New_Event.query.filter_by(user_id=user_id).all()
+
+        # Filter events for the current day
+        today = datetime.now().date()
+        today_events = [event for event in all_events if event.start_time.date() == today]
+
+        return render_template('calendar.html', events=all_events, today_events=today_events)
     else:
         return "Unauthorized", 401
 

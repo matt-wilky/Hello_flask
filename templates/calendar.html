@@ -5,10 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.css" rel="stylesheet">
+    <style>
+        /* Add some styling for the sidebar */
+        .sidebar {
+            width: 300px;
+            float: left;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+
+        /* Style the list of events */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
     <title>Calendar</title>
 </head>
 
 <body>
+    <!-- Sidebar displaying current day's events -->
+    <div class="sidebar">
+        <h2>Today's Events</h2>
+        <ul>
+            {% for event in today_events %}
+            <li>{{ event.title }} - {{ event.start_time.strftime('%H:%M') }} to {{ event.end_time.strftime('%H:%M') }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
     <!-- Link to Add Event Page -->
     <a href="/add_event">Add Event</a>
 
@@ -41,3 +70,4 @@
 </body>
 
 </html>
+
