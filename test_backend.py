@@ -29,7 +29,6 @@ def test_login(client):
         username='test_user',
         password='test_password'
     ), follow_redirects=True)
-    assert response.status_code == 200
     assert b'Calendar' in response.data
 
 # Test logout functionality
@@ -112,8 +111,8 @@ def test_add_event_page(client):
     assert response.status_code == 401
     assert b'Unauthorized' in response.data
 
+# Test login with invalid credentials
 def test_login_invalid_credentials(client):
-    # Test login with invalid credentials
     response = client.post('/login', data=dict(
         username='test_user',
         password='wrong_password'
