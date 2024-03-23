@@ -35,7 +35,7 @@
 </head>
 
 <body>
-<div style="width:80%;float:right">
+<div style="width:75%;float:right">
     <!-- Link to Add Event Page -->
     <div class="buttons">
         <a href="/add_event">
@@ -61,7 +61,7 @@
             
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
               },
               weekNumbers: false,
               dayMaxEvents: true, // allow "more" link when too many events
@@ -82,9 +82,43 @@
     </script>
 </div>
 
-<div style="width:20%;float:left">
-    <h2><center>Day Events</center></h2>
-       
+<div style="width:25%;float:left">
+    <div><center>
+        <img src="{{ url_for('static', filename='Time_Management_logo.png') }}" alt="Your Logo" class="logo", width = "95", length = "95", padding="0">  
+    </center></div>
+    <div id="calendar2"></div> 
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
+    <script src='fullcalendar/core/main.js'></script>
+    <script src='fullcalendar/list/main.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarE2 = document.getElementById('calendar2');
+          
+            var calendar2 = new FullCalendar.Calendar(calendarE2, {
+              timeZone: 'UTC',
+              themeSystem:'bootstrap5',
+              initialView: 'listMonth',
+              headerToolbar: { 
+                left: '', 
+                center: '',
+                right: ''
+              },
+
+              events: [
+                    {% for event in events %}
+                    {
+                        title: '{{ event.title }}',
+                        start: '{{ event.start_time.isoformat() }}',
+
+                        end: '{{ event.end_time.isoformat() }}'
+                    },
+                    {% endfor %}
+                ]
+            });
+          
+            calendar2.render();
+          });
+    </script> 
 </div> 
 
 </body>
