@@ -22,26 +22,25 @@
 
 <body>
 <div style="width:75%;float:right">
-    <div style="display: inline">
     <!-- Add Event Page -->
-    <div style="text-align:left">
-        <form action="/add_event" method="get" style="display: inline;">
+    
+    <div>
+        <form action="/add_event" method="get" style="float:left;width=10%">
         <button type="submit" class="buttons">Add Event</button>
         </form>
-    </div>
+    
 
         <!-- Logout button -->
-    <div style="text-align:right">
-        <form action="/logout" method="post" style="display: inline;">
+        <form action="/logout" method="post" style="float:right;width=10%">
         <button type="submit" class="buttons">Logout</button>
         </form>
     </div>
-</div>
 
+    <br>
     <br>
 
     <!--Main calendar view-->
-    <div id="calendar"></div>
+    <div id="calendar" style="display:inline;border:black"></div>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -71,6 +70,7 @@
             });
           
             calendar.render();
+            calendar.setOption('aspectRatio', 1.7);
           });
     </script>
 </div>
@@ -78,7 +78,7 @@
 <!--Sidebar events view-->
 <div style="width:25%;float:left">
     <div><center>
-        <img src="{{ url_for('static', filename='Time_Management_logo.png') }}" alt="Your Logo" class="logo", width = "95", length = "95", padding="0">  
+        <img src="{{ url_for('static', filename='Time_Management_logo.png') }}" alt="Your Logo" class="logo", width = "90", length = "90">  
     </center></div>
     <div id="calendar2"></div> 
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
