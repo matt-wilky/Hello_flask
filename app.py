@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
-import os
+from flask import jsonify
 
 app = Flask(__name__)
 app.secret_key = 'software_engineering' #Need to change to environmental variable
@@ -112,6 +112,43 @@ def register():
         except Exception as e:
             return f"An error occurred: {e}", 500  #Error management
     return render_template('register.html')
+
+
+# Edit Event Route
+@app.route('/edit_event/<int:event_id>', methods=['GET', 'POST'])
+def edit_event(event_id):
+    # Fetch the event from the database
+    event = New_Event.query.get_or_404(event_id)
+    if request.method == 'POST':
+        # Update event details
+        event.title = request.form['title']
+        event.start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
+        event.end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
+        db.session.commit()
+        return redirect(url_for('calendar'))
+    else:
+        # Render a form to edit the event
+        return render_template('edit_event.html', event=event)
+
+# Delete Event Route
+@app.route('/delete_event/<int:event_id>', methods=['POST'])
+def delete_event(event_id):
+    # Fetch the event from the database
+    event = New_Event.query.get_or_404(event_id)
+    # Delete the event
+    db.session.delete(event)
+    db.session.commit()
+
+    # Fetch all remaining events for the current user
+    user_id = session.get('user_id')
+    all_events = New_Event.query.filter_by(user_id=user_id).all()
+
+    # Find today's events for sidebar
+    today = datetime.now().date()
+    today_events = [event for event in all_events if event.start_time.date() == today]
+
+    # Pass the events data to the calendar template
+    return render_template('calendar.html', events=all_events, today_events=today_events)
 
 if __name__ == '__main__':
     with app.app_context():
