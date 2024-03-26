@@ -19,20 +19,20 @@
             <img src="{{ url_for('static', filename='Time_Management_logo.png') }}" alt="Your Logo" class="logo",
                 width="200", length="200">
             <h1>Welcome to Time Manager</h1>
-            <a href="{{ url_for('register') }}" class="btn btn-primary">Create Account</a> <!-- Changed to button -->
         </div>
         <form action="/login" method="post">
             <br>
-            <label for="username">Username </label>
+            <label for="username">Username  </label>
             <input type="text" id="username" name="username" required>
             <br>
             <br>
-            <label for="password">Password </label>
+            <label for="password">Password  </label>
             <input type="password" id="password" name="password" required>
             <br>
             <br>
             <button type="submit" class="btn btn-primary">Login</button> <!-- Changed to Bootstrap button -->
         </form>
+        <a href="{{ url_for('register') }}">or create account</a> <!-- Changed to button -->
     </center>
 </body>
 

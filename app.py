@@ -104,7 +104,7 @@ def register():
             return "Username and password are required", 400  #Initial stages of error management
         
         new_user = User(username=username) #Create new user
-        new_user.set_password(password)  # Set the password
+        new_user.set_password(password)  #Set the password
         try:
             db.session.add(new_user) #Add user to database
             db.session.commit()
