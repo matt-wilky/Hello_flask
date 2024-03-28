@@ -1,6 +1,6 @@
 import pytest
-from app import app, db, User
-
+from app import app, db, User, New_Event
+from datetime import datetime
 # Fixture to create a test client for the Flask app
 @pytest.fixture
 def client():
@@ -9,7 +9,8 @@ def client():
         with app.app_context():
             db.create_all()
         yield client
-        db.drop_all()
+        with app.app_context():  # Ensure teardown is within app context
+            db.drop_all()
 
 def test_registration(client):
     response = client.post('/register', data=dict(
@@ -132,3 +133,42 @@ def test_logout_redirect(client):
     assert response.status_code == 302
     assert response.headers['Location'] == 'http://localhost/'
 
+def test_edit_event(client):
+    with app.app_context():
+        # Create a test event
+        test_event = New_Event(title='Test Event', start_time=datetime(2024, 2, 29, 12, 0), end_time=datetime(2024, 2, 29, 13, 0))
+        db.session.add(test_event)
+        db.session.commit()
+
+        # Edit the event
+        response = client.post(f'/edit_event/{test_event.id}', data=dict(
+            title='Edited Event',
+            start_time='2024-02-29T13:00',
+            end_time='2024-02-29T14:00'
+        ), follow_redirects=True)
+
+        # Check if the event has been edited successfully
+        assert response.status_code == 200
+        assert b'Calendar' in response.data
+
+        edited_event = New_Event.query.filter_by(id=test_event.id).first()
+        assert edited_event.title == 'Edited Event'
+        assert edited_event.start_time == datetime(2024, 2, 29, 13, 0)
+        assert edited_event.end_time == datetime(2024, 2, 29, 14, 0)
+
+def test_delete_event(client):
+    with app.app_context():
+        # Create a test event
+        test_event = New_Event(title='Test Event', start_time=datetime(2024, 2, 29, 12, 0), end_time=datetime(2024, 2, 29, 13, 0))
+        db.session.add(test_event)
+        db.session.commit()
+
+        # Delete the event
+        response = client.post(f'/delete_event/{test_event.id}', follow_redirects=True)
+
+        # Check if the event has been deleted successfully
+        assert response.status_code == 200
+        assert b'Calendar' in response.data
+
+        deleted_event = New_Event.query.filter_by(id=test_event.id).first()
+        assert deleted_event is None
