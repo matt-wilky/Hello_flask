@@ -11,7 +11,6 @@ import time
 TEST_PREFIX = "test_"
 
 # Fixture for setting up the database
-# Fixture for setting up the database
 @pytest.fixture(scope="session")
 def setup_database():
     # Create all tables in the main database
@@ -33,7 +32,6 @@ def setup_database():
     # Clean up test data after testing
     with app.app_context():
         db.session.query(User).filter(User.username.startswith(TEST_PREFIX)).delete()
-        db.session.commit()
         
 # Fixture for initializing the Selenium WebDriver
 @pytest.fixture(scope="module")
