@@ -11,140 +11,120 @@
     <link href='node_modules/@fullcalendar/core/main.css' rel='stylesheet' />
     <link href='node_modules/@fullcalendar/list/main.css' rel='stylesheet' />
     <style>
-        <!--Try to get root to work-->
-        :root {
-            --fc-small-font-size: .85em;
-            --fc-page-bg-color: #fff;
-            --fc-neutral-bg-color: rgba(208, 208, 208, 0.3);
-            --fc-neutral-text-color: #808080;
-            --fc-border-color: #ddd;
-
-            --fc-button-text-color: #fff;
-            --fc-button-bg-color: #2C3E50;
-            --fc-button-border-color: #2C3E50;
-            --fc-button-hover-bg-color: #1e2b37;
-            --fc-button-hover-border-color: #1a252f;
-            --fc-button-active-bg-color: #1a252f;
-            --fc-button-active-border-color: #151e27;
-
-            --fc-event-bg-color: #3788d8;
-            --fc-event-border-color: #3788d8;
-            --fc-event-text-color: #fff;
-            --fc-event-selected-overlay-color: rgba(0, 0, 0, 0.25);
-
-            --fc-more-link-bg-color: #d0d0d0;
-            --fc-more-link-text-color: inherit;
-
-            --fc-event-resizer-thickness: 8px;
-            --fc-event-resizer-dot-total-width: 8px;
-            --fc-event-resizer-dot-border-width: 1px;
-
-            --fc-non-business-color: rgba(215, 215, 215, 0.3);
-            --fc-bg-event-color: rgb(143, 223, 130);
-            --fc-bg-event-opacity: 0.3;
-            --fc-highlight-color: rgba(188, 232, 241, 0.3);
-            --fc-today-bg-color: rgba(255, 220, 40, 0.15);
-            --fc-now-indicator-color: red;
+        /* Override FullCalendar CSS for event colors */
+        .fc-event {
+            background-color: var(--fc-event-bg-color) !important;
+            border-color: var(--fc-event-border-color) !important;
+            color: var(--fc-event-text-color) !important;
         }
-            .buttons {
-                background: #4682B4;
-                color: white
-            }
+
+        .fc-list-item {
+            background-color: var(--fc-event-bg-color) !important;
+            border-color: var(--fc-event-border-color) !important;
+            color: var(--fc-event-text-color) !important;
+        }
+
+        .buttons {
+            background: #4682B4;
+            color: white;
+        }
     </style>
     <title>Calendar</title>
-    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='Time_Management_logo.png') }}"/>
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='Time_Management_logo.png') }}" />
 </head>
 
 <body>
-<div style="width:75%;float:right">
-    <!-- Add Event Page -->
-    <div>
-        <form action="/add_event" method="get" style="float:left;width=10%">
-            <button type="submit" class="buttons">Add Event</button>
-        </form>
-        <!-- Logout button -->
-        <form action="/logout" method="post" style="float:right;width=10%">
-            <button type="submit" class="buttons">Logout</button>
-        </form>
-    </div>
-    <br>
-    <br>
-    <!-- Main calendar view -->
-    <div id="calendar" style="display:inline;border:black"></div>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                timeZone: 'UTC',
-                themeSystem: 'bootstrap5',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                weekNumbers: false,
-                dayMaxEvents: true,
-                events: [
-                    {% for event in events %}
-                    {
-                        title: '{{ event.title }}',
-                        start: '{{ event.start_time.isoformat() }}',
-                        end: '{{ event.end_time.isoformat() }}',
-                        url: '/edit_event/{{ event.id }}', // URL for editing event
-                        extendedProps: { id: '{{ event.id }}' } // Event ID
+    <div style="width:75%;float:right">
+        <!-- Add Event Page -->
+        <div>
+            <form action="/add_event" method="get" style="float:left;width=10%">
+                <button type="submit" class="buttons">Add Event</button>
+            </form>
+            <!-- Logout button -->
+            <form action="/logout" method="post" style="float:right;width=10%">
+                <button type="submit" class="buttons">Logout</button>
+            </form>
+        </div>
+        <br>
+        <br>
+        <!-- Main calendar view -->
+        <div id="calendar" style="display:inline;border:black"></div>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendarEl = document.getElementById('calendar');
+                var calendar = new FullCalendar.Calendar(calendarEl, {
+                    timeZone: 'UTC',
+                    themeSystem: 'bootstrap5',
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
                     },
-                    {% endfor %}
-                ],
-                eventClick: function (info) {
-                    if (info.event.url) {
-                        window.location.href = info.event.url;
-                    }
-                },
-                navLinks: true,
-                navLinkDayClick: true
-            });
-            calendar.render();
-            calendar.setOption('aspectRatio', 2.165);
-        });
-    </script>
-</div>
-<!-- Sidebar events view -->
-<div style="width:25%;float:left">
-    <div>
-        <center><img src="{{ url_for('static', filename='Time_Management_logo.png') }}" alt="Your Logo" class="logo", width = "112", length = "112"></center>
-    </div>
-    <div id="calendar2"></div>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
-    <script src='fullcalendar/core/main.js'></script>
-    <script src='fullcalendar/list/main.js'></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarE2 = document.getElementById('calendar2');
-            var calendar2 = new FullCalendar.Calendar(calendarE2, {
-                timeZone: 'UTC',
-                themeSystem:'bootstrap5',
-                initialView: 'listMonth',
-                headerToolbar: false,
-                events: [
-                    {% for event in events %}
-                    {
-                        title: '{{ event.title }}',
-                        start: '{{ event.start_time.isoformat() }}',
-                        end: '{{ event.end_time.isoformat() }}',
-                        url: '/edit_event/{{ event.id }}', // URL for editing event
-                        extendedProps: { id: '{{ event.id }}' }, // Event ID
-                        description: 'This is where event description goes'
+                    weekNumbers: false,
+                    dayMaxEvents: true,
+                    events: [
+                        {% for event in events %}
+                        // Render regular events
+                        {
+                            title: '{{ event.title }}',
+                            start: '{{ event.start_time.isoformat() }}',
+                            end: '{{ event.end_time.isoformat() }}',
+                            color: '{{ event.color }}',
+                            url: '/edit_event/{{ event.id }}',
+                            rrule: '{{ event.rrule }}', // Include RRULE
+                            extendedProps: { id: '{{ event.id }}' }
+                        },
+                        {% endfor %}
+                    ],
+                    eventClick: function (info) {
+                        if (info.event.url) {
+                            window.location.href = info.event.url;
+                        }
                     },
-                    {% endfor %}
-                ]
+                    navLinks: true,
+                    navLinkDayClick: true
+                });
+                calendar.render();
+                calendar.setOption('aspectRatio', 2.165);
             });
-            calendar2.render();
-            calendar2.setOption('aspectRatio', 0.73);
-        });
-    </script>
-</div>
+        </script>
+    </div>
+    <!-- Sidebar events view -->
+    <div style="width:25%;float:left">
+        <div>
+            <center><img src="{{ url_for('static', filename='Time_Management_logo.png') }}" alt="Your Logo"
+                    class="logo", width="112", length="112"></center>
+        </div>
+        <div id="calendar2"></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var calendarE2 = document.getElementById('calendar2');
+                var calendar2 = new FullCalendar.Calendar(calendarE2, {
+                    timeZone: 'UTC',
+                    themeSystem: 'bootstrap5',
+                    initialView: 'listMonth',
+                    headerToolbar: false,
+                    events: [
+                        {% for event in events %}
+                        // Render regular events
+                        {
+                            title: '{{ event.title }}',
+                            start: '{{ event.start_time.isoformat() }}',
+                            end: '{{ event.end_time.isoformat() }}',
+                            color: '{{ event.color }}',
+                            url: '/edit_event/{{ event.id }}',
+                            rrule: '{{ event.rrule }}', // Include RRULE
+                            extendedProps: { id: '{{ event.id }}' }
+                        },
+                        {% endfor %}
+                    ]
+                });
+                calendar2.render();
+                calendar2.setOption('aspectRatio', 0.73);
+            });
+        </script>
+    </div>
 </body>
+
 </html>
-
-
