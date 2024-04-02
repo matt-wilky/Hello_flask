@@ -30,7 +30,7 @@
                 value="{{ event.end_time.strftime('%Y-%m-%dT%H:%M') }}" required>
             <br>
                 <label for="end_time" class="form-label">Color </label>
-                <input type="color" id="color" name="color" default:"black"></input>
+                <input type="color" id="color" name="color" value="{{ event.color }}" required></input>
                 <label class="switch" style="margin:15px">Notify Me 
                     <input type="checkbox">
                 </label>

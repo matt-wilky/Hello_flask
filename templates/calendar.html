@@ -92,6 +92,7 @@
                         title: '{{ event.title }}',
                         start: '{{ event.start_time.isoformat() }}',
                         end: '{{ event.end_time.isoformat() }}',
+                        color: '{{ event.color }}',
                         url: '/edit_event/{{ event.id }}', // URL for editing event
                         extendedProps: { id: '{{ event.id }}' } // Event ID
                     },
@@ -135,6 +136,7 @@
                         start: '{{ event.start_time.isoformat() }}',
                         end: '{{ event.end_time.isoformat() }}',
                         url: '/edit_event/{{ event.id }}', // URL for editing event
+                        color: '{{ event.color }}', 
                         extendedProps: { id: '{{ event.id }}' }, // Event ID
                         description: 'This is where event description goes'
                     },
