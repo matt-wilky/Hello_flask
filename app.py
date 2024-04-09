@@ -41,7 +41,6 @@ class New_Event(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     color = db.Column(db.String(7), nullable=False, default='#000000')  # Add color attribute with default value
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Connect to other class
-    rrule = db.Column(db.String(255))  # Add a new column for RRULE
 
     def __repr__(self):
         return f'<New_Event {self.title}>'
@@ -84,11 +83,10 @@ def add_event():
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
         color = request.form['color']
-        rrule = request.form.get('rrule', '')  # Get the RRULE from the form or default to empty string
         user_id = session['user_id']  # Get user ID from session
 
         # Save the event to the database
-        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color, rrule=rrule, user_id=user_id)
+        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color,user_id=user_id)
         db.session.add(new_event)
         db.session.commit()
 
@@ -148,7 +146,6 @@ def edit_event(event_id):
         event.start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         event.end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
         event.color = request.form['color']
-        event.rrule = request.form['rrule']  # Update RRULE
         db.session.commit()
         return redirect(url_for('calendar'))
     
