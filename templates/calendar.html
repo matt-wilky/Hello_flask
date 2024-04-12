@@ -59,34 +59,41 @@
 <body>
 <div style="width:75%;float:right">
     <!-- Add Event Page -->
+    
     <div>
         <form action="/add_event" method="get" style="float:left;width=10%">
-            <button type="submit" class="buttons">Add Event</button>
+        <button type="submit" class="buttons">Add Event</button>
         </form>
+    
+
         <!-- Logout button -->
         <form action="/logout" method="post" style="float:right;width=10%">
-            <button type="submit" class="buttons">Logout</button>
+        <button type="submit" class="buttons">Logout</button>
         </form>
     </div>
+
     <br>
     <br>
-    <!-- Main calendar view -->
+
+    <!--Main calendar view-->
     <div id="calendar" style="display:inline;border:black"></div>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.9.0/main.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
+          
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                timeZone: 'UTC',
-                themeSystem: 'bootstrap5',
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                },
-                weekNumbers: false,
-                dayMaxEvents: true,
-                events: [
+              timeZone: 'UTC',
+              themeSystem: 'bootstrap5',
+              headerToolbar: {
+            
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+              },
+              weekNumbers: false,
+              dayMaxEvents: true, // allow "more" link when too many events
+              events: [
                     {% for event in events %}
                     {
                         title: '{{ event.title }}',
@@ -124,6 +131,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarE2 = document.getElementById('calendar2');
+          
             var calendar2 = new FullCalendar.Calendar(calendarE2, {
                 timeZone: 'UTC',
                 themeSystem:'bootstrap5',

@@ -42,6 +42,7 @@ class New_Event(db.Model):
     def __repr__(self):
         return f'<New_Event {self.title}>'
 
+
 # Add Splash Route
 @app.route('/')
 def splash_page():
@@ -53,19 +54,28 @@ def calendar():
     user_id = session.get('user_id')
 
     if user_id:
-        all_events = New_Event.query.filter_by(user_id=user_id).all()  # Pull events from database for current user
-        # Find today's events for sidebar
+        # Pull events from the database for the current user
+        all_events = New_Event.query.filter_by(user_id=user_id).all()
+        
+        # Find today's events for the sidebar
         today = datetime.now().date()
         today_events = [event for event in all_events if event.start_time.date() == today]
-        # Returns Calendar and Sidebar View
+        
+        # Return Calendar and Sidebar View
         return render_template('calendar.html', events=all_events, today_events=today_events)
     else:
         return "Unauthorized", 401
 
 # Add_Event Route
+
 @app.route('/add_event', methods=['GET', 'POST'])
 def add_event():
     if request.method == 'POST':
+        # Ensure user is logged in
+        if 'user_id' not in session:
+            return redirect(url_for('login'))  # Redirect to login page or handle appropriately
+
+        # Extract form data
         title = request.form['title']
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
@@ -79,6 +89,7 @@ def add_event():
         return redirect(url_for('calendar'))
 
     return render_template('add_event.html')
+
 
 # Login Route
 @app.route('/login', methods=['POST'])
@@ -124,20 +135,19 @@ def register():
 # Edit Event Route
 @app.route('/edit_event/<int:event_id>', methods=['GET', 'POST'])
 def edit_event(event_id):
-    # Fetch the event from the database
     event = New_Event.query.get_or_404(event_id)
+    
     if request.method == 'POST':
-        # Update event details
         event.title = request.form['title']
         event.start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         event.end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
         event.color = request.form['color']
+        event.color = request.form['color']
         db.session.commit()
         return redirect(url_for('calendar'))
-    else:
-        # Render a form to edit the event
-        return render_template('edit_event.html', event=event)
-
+    
+    return render_template('edit_event.html', event=event)
+    
 # Delete Event Route
 @app.route('/delete_event/<int:event_id>', methods=['POST'])
 def delete_event(event_id):
