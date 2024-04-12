@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import jsonify
+
 
 app = Flask(__name__)
 app.secret_key = 'software_engineering'
@@ -36,6 +36,7 @@ class New_Event(db.Model):
     title = db.Column(db.String(100), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
+    color = db.Column(db.String(7), nullable = False, default = '#000000')
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Connect to other class
 
     def __repr__(self):
@@ -68,9 +69,10 @@ def add_event():
         title = request.form['title']
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
+        color = request.form['color']
 
         # Create new event associated with the current user
-        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, user_id=session.get('user_id'))
+        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color, user_id=session.get('user_id'))
         db.session.add(new_event)
         db.session.commit()
 
@@ -129,6 +131,7 @@ def edit_event(event_id):
         event.title = request.form['title']
         event.start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         event.end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
+        event.color = request.form['color']
         db.session.commit()
         return redirect(url_for('calendar'))
     else:

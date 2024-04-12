@@ -13,31 +13,45 @@
 
 <body>
     <center>
+        <div style="width:35%">
+            <br><br><br>
         <h1>Add Event</h1>
         <form method="POST" action="{{ url_for('add_event') }}" class="needs-validation" novalidate>
             <div class="mb-3">
-                <label for="title" class="form-label">Title:</label>
-                <input type="text" id="title" name="title" class="form-control" required>
+                <label for="title" class="form-label">Title </label>
+                <input type="text" id="title" name="title" placeholder = "event title" class="form-control" required>
                 <div class="invalid-feedback">
                     Please provide a title for the event.
                 </div>
             </div>
             <div class="mb-3">
-                <label for="start_time" class="form-label">Start Time:</label>
-                <input type="datetime-local" id="start_time" name="start_time" class="form-control" required>
+                <label for="start_time" class="form-label">Start Time </label>
+                <input type="datetime-local" id="start_time" name="start_time" required>
                 <div class="invalid-feedback">
                     Please provide a start time for the event.
                 </div>
             </div>
             <div class="mb-3">
-                <label for="end_time" class="form-label">End Time:</label>
-                <input type="datetime-local" id="end_time" name="end_time" class="form-control" required>
+                <label for="end_time" class="form-label">End Time </label>
+                <input type="datetime-local" id="end_time" name="end_time" required>
                 <div class="invalid-feedback">
                     Please provide an end time for the event.
                 </div>
             </div>
+            <div class="mb-3" sytle="display:inline">
+                <label for="end_time" class="form-label">Color </label>
+                <input type="color" id="color" name="color" value="#000000"></input>
+                <label class="switch" style="margin:15px">Notify Me 
+                    <input type="checkbox">
+                </label>
+            </div>
+            <div class="mb-3">
+                <label for="Name" style="text-align:top">Description </label>
+                <textarea id="freeform" name="freeform" rows="1" cols="25" placeholder="event description"></textarea>
+            </div>
             <button type="submit" class="btn btn-primary">Add Event</button> <!-- Bootstrap button -->
         </form>
+        </div>
     </center>
 
     <!-- Bootstrap JavaScript Bundle with Popper -->
