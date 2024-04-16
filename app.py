@@ -40,6 +40,7 @@ class New_Event(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     color = db.Column(db.String(7), nullable = False, default = '#000000')
+    description = db.Column(db.String(500), nullable=True)
     # Connect to other class
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
     def __repr__(self):
