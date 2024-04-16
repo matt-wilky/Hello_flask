@@ -1,6 +1,9 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 from flask import Flask, render_template, request, redirect, url_for, session
-from flask_sqlalchemy import SQLAlchemy # type: ignore
-from datetime import datetime, timedelta
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -37,13 +40,14 @@ class New_Event(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     color = db.Column(db.String(7), nullable = False, default = '#000000')
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Connect to other class
-
+    description = db.Column(db.String(500), nullable=True)
+    # Connect to other class
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
     def __repr__(self):
         return f'<New_Event {self.title}>'
 
 
-# Add Splash Route
+# Add Splash Route for App
 @app.route('/')
 def splash_page():
     return render_template('splash.html')
@@ -56,11 +60,9 @@ def calendar():
     if user_id:
         # Pull events from the database for the current user
         all_events = New_Event.query.filter_by(user_id=user_id).all()
-        
         # Find today's events for the sidebar
         today = datetime.now().date()
         today_events = [event for event in all_events if event.start_time.date() == today]
-        
         # Return Calendar and Sidebar View
         return render_template('calendar.html', events=all_events, today_events=today_events)
     else:
@@ -74,13 +76,11 @@ def add_event():
         # Ensure user is logged in
         if 'user_id' not in session:
             return redirect(url_for('login'))  # Redirect to login page or handle appropriately
-
         # Extract form data
         title = request.form['title']
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
         color = request.form['color']
-
         # Create new event associated with the current user
         new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color, user_id=session.get('user_id'))
         db.session.add(new_event)
@@ -136,7 +136,6 @@ def register():
 @app.route('/edit_event/<int:event_id>', methods=['GET', 'POST'])
 def edit_event(event_id):
     event = New_Event.query.get_or_404(event_id)
-    
     if request.method == 'POST':
         event.title = request.form['title']
         event.start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
@@ -145,7 +144,6 @@ def edit_event(event_id):
         event.color = request.form['color']
         db.session.commit()
         return redirect(url_for('calendar'))
-    
     return render_template('edit_event.html', event=event)
     
 # Delete Event Route
@@ -156,7 +154,6 @@ def delete_event(event_id):
     # Delete the event
     db.session.delete(event)
     db.session.commit()
-
     # Redirect to calendar page
     return redirect(url_for('calendar'))
 
@@ -164,3 +161,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Update database
     app.run(host='0.0.0.0', port=443, debug=True)
+    

@@ -1,7 +1,10 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+
 import pytest
 from app import app, db, User, New_Event
 from datetime import datetime
-from werkzeug.security import generate_password_hash
 
 @pytest.fixture
 def client():
