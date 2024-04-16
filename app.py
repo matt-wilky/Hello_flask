@@ -79,12 +79,13 @@ def add_event():
         title = request.form['title']
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
-        if start_time < end_time:
-            pyautogui(text='Invalid Timeframe', title='Error',button='OK')
-        else:
+        
         # Create new event associated with the current user
-            color = request.form['color']
-            new_event = New_Event(title=title, start_time=start_time, end_time=end_time, user_id=session.get('user_id'))
+        color = request.form['color']
+        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, user_id=session.get('user_id'))
+        if start_time > end_time:
+           pyautogui.alert('Invalid timeframe')
+        else:
             db.session.add(new_event)
             db.session.commit()
 
