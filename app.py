@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
-
+import pyautogui
 
 app = Flask(__name__)
 app.secret_key = 'software_engineering'
@@ -79,12 +79,14 @@ def add_event():
         title = request.form['title']
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
-        color = request.form['color']
-
+        if start_time < end_time:
+            pyautogui(text='Invalid Timeframe', title='Error',button='OK')
+        else:
         # Create new event associated with the current user
-        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color, user_id=session.get('user_id'))
-        db.session.add(new_event)
-        db.session.commit()
+            color = request.form['color']
+            new_event = New_Event(title=title, start_time=start_time, end_time=end_time, user_id=session.get('user_id'))
+            db.session.add(new_event)
+            db.session.commit()
 
         return redirect(url_for('calendar'))
 
