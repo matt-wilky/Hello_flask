@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Splash Page</title>
-    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='Time_Management_logo.png') }}"/>
-    <!--link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"!>
-    <!- Add link to your custom CSS file if needed -->
+    <link rel="shortcut icon" type="image/jpg" href="{{ url_for('static', filename='Time_Management_logo.png') }}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+        crossorigin="anonymous">
 </head>
-<center>
+
 <body>
     <center>
         <div class="splash-container">
@@ -33,5 +35,5 @@
         <a href="{{ url_for('register') }}">or create account</a> <!-- Changed to button -->
     </center>
 </body>
-</center>
+
 </html>
