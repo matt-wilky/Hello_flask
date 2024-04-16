@@ -39,15 +39,14 @@
                 </div>
             </div>
             <div class="mb-3" sytle="display:inline">
-                <label for="end_time" class="form-label">Color </label>
+                <label for="color" class="form-label">Color </label>
                 <input type="color" id="color" name="color" value="#000000"></input>
-                <label class="switch" style="margin:15px">Notify Me 
-                    <input type="checkbox">
-                </label>
             </div>
             <div class="mb-3">
-                <label for="Name" style="text-align:top">Description </label>
-                <textarea id="freeform" name="freeform" rows="1" cols="25" placeholder="event description"></textarea>
+                <label for="description" sytle="display:inline" class="form-label">Description </label>
+                <input type="textarea" id="freeform" name="description" rows="10" cols="25" placeholder = "event description" class="form-control">
+                <!--Try to resize description box-->
+                <!--<textarea id="freeform" name="freeform" rows="1" cols="25" placeholder="event description"></textarea>-->
             </div>
             <button type="submit" class="btn btn-primary">Add Event</button> <!-- Bootstrap button -->
         </form>
