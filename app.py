@@ -46,7 +46,7 @@ class New_Event(db.Model):
         return f'<New_Event {self.title}>'
 
 
-# Add Splash Route
+# Add Splash Route for App
 @app.route('/')
 def splash_page():
     return render_template('splash.html')
