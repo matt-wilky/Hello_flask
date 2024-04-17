@@ -40,9 +40,10 @@ class New_Event(db.Model):
     start_time = db.Column(db.DateTime, nullable=False)
     end_time = db.Column(db.DateTime, nullable=False)
     color = db.Column(db.String(7), nullable = False, default = '#000000')
-    description = db.Column(db.String(500), nullable=True)
-    # Connect to other class
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  
+
+    description = db.Column(db.String(500), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Connect to other class
+
     def __repr__(self):
         return f'<New_Event {self.title}>'
 
@@ -81,8 +82,10 @@ def add_event():
         start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
         color = request.form['color']
+        description = request.form['description']
+
         # Create new event associated with the current user
-        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color, user_id=session.get('user_id'))
+        new_event = New_Event(title=title, start_time=start_time, end_time=end_time, color=color, description=description, user_id=session.get('user_id'))
         db.session.add(new_event)
         db.session.commit()
 
@@ -141,7 +144,7 @@ def edit_event(event_id):
         event.start_time = datetime.strptime(request.form['start_time'], '%Y-%m-%dT%H:%M')
         event.end_time = datetime.strptime(request.form['end_time'], '%Y-%m-%dT%H:%M')
         event.color = request.form['color']
-        event.color = request.form['color']
+        event.description = request.form['description']
         db.session.commit()
         return redirect(url_for('calendar'))
     return render_template('edit_event.html', event=event)
