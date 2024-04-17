@@ -36,16 +36,20 @@
                         End time cannot be before start time.
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="color" class="form-label">Color</label>
-                    <input type="color" id="color" name="color" value="#000000" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" rows="3" class="form-control" placeholder="event description"></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Add Event</button>
-            </form>
+
+            </div>
+            <div class="mb-3" sytle="display:inline">
+                <label for="color" class="form-label">Color </label>
+                <input type="color" id="color" name="color" value="#000000"></input>
+            </div>
+            <div class="mb-3">
+                <label for="description" sytle="display:inline" class="form-label">Description </label>
+                <input type="textarea" id="freeform" name="description" rows="10" cols="25" placeholder = "event description" class="form-control">
+                <!--Try to resize description box-->
+                <!--<textarea id="freeform" name="freeform" rows="1" cols="25" placeholder="event description"></textarea>-->
+            </div>
+            <button type="submit" class="btn btn-primary">Add Event</button> <!-- Bootstrap button -->
+        </form>
         </div>
     </center>
 
