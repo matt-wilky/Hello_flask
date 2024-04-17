@@ -1,11 +1,13 @@
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
 import pytest
+import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from sqlalchemy import create_engine
 from app import app, db, User, New_Event
-import time
 
 # Prefix for test data
 TEST_PREFIX = "test_"
@@ -32,7 +34,6 @@ def setup_database():
     # Clean up test data after testing
     with app.app_context():
         db.session.query(User).filter(User.username.startswith(TEST_PREFIX)).delete()
-        
 # Fixture for initializing the Selenium WebDriver
 @pytest.fixture(scope="module")
 def driver():
@@ -68,12 +69,9 @@ def test_registration_and_login(driver, setup_database):
 
     # Wait for the registration process to complete and splash page to load
     time.sleep(5)  # Adding a short delay for demonstration purposes
-    
     # Verify that the registration was successful by checking the title
     assert "Splash Page" in driver.title
-    
     # Login
-   
     # Wait for login fields to be visible
     username_field = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "username"))
@@ -100,7 +98,6 @@ def test_registration_and_login(driver, setup_database):
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.buttons'))
     )
     add_event_button.click()
-
     # Wait for the add_event page to load
     WebDriverWait(driver, 10).until(
         EC.title_contains("Add Event")
@@ -130,7 +127,6 @@ def test_registration_and_login(driver, setup_database):
 
     # Verify that we are back on the calendar page after submitting the event
     assert "Calendar" in driver.title
-    
     event_element = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CLASS_NAME, 'fc-event'))
     )
