@@ -25,12 +25,12 @@
                 </div>
                 <div class="mb-3">
                     <label for="start_time" class="form-label">Start Time</label>
-                    <input type="datetime-local" id="start_time" name="start_time" class="form-control" required>
+                    <input type="datetime-local" id="start_time" name="start_time" required>
                     <div class="invalid-feedback">Please provide a start time for the event.</div>
                 </div>
                 <div class="mb-3">
                     <label for="end_time" class="form-label">End Time</label>
-                    <input type="datetime-local" id="end_time" name="end_time" class="form-control" required>
+                    <input type="datetime-local" id="end_time" name="end_time" required>
                     <div class="invalid-feedback">Please provide an end time for the event.</div>
                     <div class="error-message text-danger" id="time-error" style="display: none;">
                         End time cannot be before start time.
@@ -43,8 +43,8 @@
                 <input type="color" id="color" name="color" value="#000000"></input>
             </div>
             <div class="mb-3">
-                <label for="description" sytle="display:inline" class="form-label">Description </label>
-                <input type="textarea" id="freeform" name="description" rows="10" cols="25" placeholder = "event description" class="form-control">
+                <label for="description" class="form-label">Description </label>
+                <input type="textarea" id="description" name="description" placeholder = "event description" class="form-control" style = "width:35%">
                 <!--Try to resize description box-->
                 <!--<textarea id="freeform" name="freeform" rows="1" cols="25" placeholder="event description"></textarea>-->
             </div>
