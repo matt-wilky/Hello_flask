@@ -11,7 +11,7 @@ app = Flask(__name__)
 app.secret_key = 'software_engineering'
 
 # Connection String + database configuration info
-connection_string = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=time-manager-24.database.windows.net;DATABASE=time-manager-database;UID=CloudSAe3d0c2d0;PWD=Suarez89!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=2000;'
+connection_string = 'DRIVER={ODBC Driver 17 for SQL Server};SERVER=time-manager-24.database.windows.net;DATABASE=time-manager-database;UID=CloudSAe3d0c2d0;PWD=Suarez89!;Encrypt=yes;TrustServerCertificate=no;Connection Timeout=300;'
 app.config['SQLALCHEMY_DATABASE_URI'] = f'mssql+pyodbc:///?odbc_connect={connection_string}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -41,7 +41,7 @@ class New_Event(db.Model):
     end_time = db.Column(db.DateTime, nullable=False)
     color = db.Column(db.String(7), nullable = False, default = '#000000')
 
-    description = db.Column(db.String(500), nullable=False)
+    description = db.Column(db.String(500), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # Connect to other class
 
     def __repr__(self):
@@ -120,11 +120,15 @@ def register():
         print(request.form)
         username = request.form.get('username')  # Get Username
         password = request.form.get('password')  # Get Password
-        # If statement
-        if not username or not password:
-            return "Username and password are required", 400  # Initial stages of error management
 
-        new_user = User(username=username)  # Create new user
+        # Check for duplicate username
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            # Return an error message if the username is already taken
+            return "Username is already taken. Please choose a different username.", 400
+
+        # Create new user
+        new_user = User(username=username)
         print(f"The new user: {new_user}")
         new_user.set_password(password)  # Set the password
         try:
@@ -132,7 +136,9 @@ def register():
             db.session.commit()
             return redirect(url_for('splash_page'))  # Redirect to splash page
         except Exception as e:
+            db.session.rollback()  # Rollback the session in case of an error
             return f"An error occurred: {e}", 500  # Error management
+
     return render_template('register.html')
 
 # Edit Event Route
