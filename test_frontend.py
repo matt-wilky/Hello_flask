@@ -1,13 +1,11 @@
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
-# pylint: disable=missing-function-docstring
 import pytest
+import app
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from app import app, db, User, New_Event
+from app import db, User, New_Event
 
 # Prefix for test data
 TEST_PREFIX = "test_"
@@ -16,24 +14,11 @@ TEST_PREFIX = "test_"
 @pytest.fixture(scope="session")
 def setup_database():
     # Create all tables in the main database
-    with app.app_context():
+    with app.app.app_context():
         db.create_all()
+        yield  # Provide control back to the test function
+        db.drop_all()
 
-    # Clean up test data before testing
-    with app.test_request_context():
-        # Delete events associated with test users first
-        test_users = db.session.query(User).filter(User.username.startswith(TEST_PREFIX)).all()
-        for user in test_users:
-            db.session.query(New_Event).filter_by(user_id=user.id).delete()
-
-        # Then delete the test users
-        db.session.query(User).filter(User.username.startswith(TEST_PREFIX)).delete()
-        db.session.commit()
-    yield
-
-    # Clean up test data after testing
-    with app.app_context():
-        db.session.query(User).filter(User.username.startswith(TEST_PREFIX)).delete()
 # Fixture for initializing the Selenium WebDriver
 @pytest.fixture(scope="module")
 def driver():
@@ -43,112 +28,126 @@ def driver():
     driver.quit()
 
 # Test case for registration and login
-# Test case for registration and login
-def test_registration_and_login(driver, setup_database):
+@pytest.mark.usefixtures("setup_database")
+def test_registration_and_login(driver):
+
     driver.get("http://127.0.0.1:443")
 
-    # Wait for register button to be clickable
+    # Perform registration
     register_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, '.btn-primary'))
+        EC.element_to_be_clickable((By.LINK_TEXT, 'or create account'))
     )
     register_button.click()
 
-    # Wait for username field to be visible
     username_field = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "username"))
     )
-    username_field.send_keys("test_usernamee")
+    username_field.send_keys("test_user")
 
-    # Find and fill password field
     password_field = driver.find_element(By.ID, "password")
-    password_field.send_keys("test_passworde")
+    password_field.send_keys("test_password")
 
-    # Find and click submit button
-    submit_button = driver.find_element(By.CSS_SELECTOR, "input[type='submit']")
+    submit_button = driver.find_element(By.CSS_SELECTOR, ".btn-primary")
     submit_button.click()
 
-    # Wait for the registration process to complete and splash page to load
-    time.sleep(5)  # Adding a short delay for demonstration purposes
-    # Verify that the registration was successful by checking the title
-    assert "Splash Page" in driver.title
-    # Login
-    # Wait for login fields to be visible
+    time.sleep(2)  # Wait for registration to complete
+
+    # Perform login
     username_field = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "username"))
     )
-    username_field.send_keys("test_usernamee")
+    username_field.send_keys("test_user")
 
-    # Fill password field
     password_field = driver.find_element(By.ID, "password")
-    password_field.send_keys("test_passworde")
+    password_field.send_keys("test_password")
 
-    # Find and click submit button
-    submit_button = driver.find_element(By.CSS_SELECTOR, ".btn-success")
+    submit_button = driver.find_element(By.CSS_SELECTOR, ".btn-primary")
     submit_button.click()
 
-    # Wait for the calendar page to load
-    WebDriverWait(driver, 10).until(
-        EC.title_contains("Calendar")
-    )
+    time.sleep(2)  # Wait for login to complete
 
-    # Verify that the calendar view is loaded
-    assert "Calendar" in driver.title
-    
+    # Perform event addition
     add_event_button = WebDriverWait(driver, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.buttons'))
     )
     add_event_button.click()
-    # Wait for the add_event page to load
-    WebDriverWait(driver, 10).until(
-        EC.title_contains("Add Event")
-    )
 
-    # Fill out the add event form
     title_input = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "title"))
     )
-    title_input.send_keys("Test Event Title")
+    title_input.send_keys("Test Event")
 
     start_time_input = driver.find_element(By.ID, "start_time")
-    start_time_input.send_keys("3202-02-40T12:00")  # Example start time, adjust as needed
+    start_time_input.send_keys("4042-02-40T12:00")
 
     end_time_input = driver.find_element(By.ID, "end_time")
-    end_time_input.send_keys("3202-02-40T13:00")  # Example end time, adjust as needed
-    time.sleep(5)
-    # Submit the form
+    end_time_input.send_keys("4042-02-40T13:00")
+    
+    time.sleep(4)
+
     submit_button = driver.find_element(By.CSS_SELECTOR, ".btn-primary")
     submit_button.click()
 
-    # Wait for the page to load after submission
-    WebDriverWait(driver, 10).until(
-        EC.title_contains("Calendar")
-    )
-    time.sleep(5)
+    time.sleep(2)  # Wait for event addition to complete
 
-    # Verify that we are back on the calendar page after submitting the event
+    # Verify event insertion into the database
+    with app.app.app_context():
+        assert New_Event.query.filter_by(title='Test Event').first() is not None
+
     assert "Calendar" in driver.title
-    event_element = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CLASS_NAME, 'fc-event'))
+    
+    # Perform event editing
+    edit_event_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href*="/edit_event"]'))
     )
-    event_element.click()
+    edit_event_button.click()
 
-    WebDriverWait(driver, 10).until(
-        EC.title_contains("Edit Event")
-    )
+    time.sleep(2)  # Wait for the page to load
 
-    # Modify event title
     title_input = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.ID, "title"))
     )
     title_input.clear()
-    title_input.send_keys("Modified Event Title")
-    time.sleep(5)
+    title_input.send_keys("Edited Event")
+
     submit_button = driver.find_element(By.CSS_SELECTOR, ".btn-primary")
     submit_button.click()
 
-    WebDriverWait(driver, 10).until(
-        EC.title_contains("Calendar")
-    )
-    time.sleep(5)
+    time.sleep(2)  # Wait for event editing to complete
 
-    assert "Calendar" in driver.title
+    # Verify event editing in the database
+    with app.app.app_context():
+        edited_event = New_Event.query.filter_by(title='Edited Event').first()
+        assert edited_event is not None
+        
+    edit_event_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[href*="/edit_event"]'))
+    )
+    edit_event_button.click()
+
+    # Perform event deletion
+    delete_event_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.btn-danger'))
+    )
+    delete_event_button.click()
+
+    time.sleep(2)  # Wait for the confirmation dialog to appear
+
+    #confirm_delete_button = driver.switch_to.alert
+    #confirm_delete_button.accept()
+
+    time.sleep(2)  # Wait for event deletion to complete
+
+    # Verify event deletion from the database
+    with app.app.app_context():
+        assert New_Event.query.filter_by(title='Edited Event').first() is None
+
+    # Perform logout
+    logout_button = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.XPATH, '//form[@action="/logout"]/button'))
+    )
+    logout_button.click()
+
+    time.sleep(2)  # Wait for logout to complete
+
+    assert "Splash Page" in driver.title
