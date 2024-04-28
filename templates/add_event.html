@@ -42,12 +42,13 @@
                 <label for="color" class="form-label">Color </label>
                 <input type="color" id="color" name="color" value="#000000"></input>
             </div>
-            <div class="mb-3">
-                <label for="description" sytle="display:inline" class="form-label">Description </label>
-                <input type="textarea" id="freeform" name="description" rows="10" cols="25" placeholder = "event description" class="form-control">
-                <!--Try to resize description box-->
-                <!--<textarea id="freeform" name="freeform" rows="1" cols="25" placeholder="event description"></textarea>-->
+            <div class="mb-3 text-center">
+                <label for="description" class="form-label">Description</label>
+                <div class="d-inline-block">
+                    <input type="text" id="description" name="description" rows="3" placeholder="Event description" class="form-control">
+                </div>
             </div>
+            
             <button type="submit" class="btn btn-primary">Add Event</button> <!-- Bootstrap button -->
         </form>
         </div>
