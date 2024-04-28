@@ -31,8 +31,8 @@
                 <label for="color" class="form-label">Color </label>
                 <input type="color" id="color" name="color" value="{{ event.color }}"></input>
             <br>
-                <label for="description" sytle="display:inline" class="form-label">Description </label>
-                <input type="text" id="description" name="description" value="{{ event.description }}" placeholder="event description" class="form-control">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" id="description" name="description" value="{{event.description}}" rows="3" placeholder="Event description" class="form-control"></input>
                 <!--Try to resize description box-->
             <br>
             <button type="submit" class="btn btn-primary" style="margin:10px">Update Event</button> <!-- Bootstrap button -->

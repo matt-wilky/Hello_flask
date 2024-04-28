@@ -68,7 +68,7 @@ def test_registration_and_login(driver):
 
     # Perform event addition
     add_event_button = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.buttons'))
+        EC.element_to_be_clickable((By.CSS_SELECTOR, '.btn-primary'))
     )
     add_event_button.click()
 
